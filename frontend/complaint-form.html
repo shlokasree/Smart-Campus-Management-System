@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="js/config.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CampusCare | Report Issue</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #172033;
+        }
+
+        /* ==============================
+           MAIN LAYOUT
+        ============================== */
+
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+
+        /* ==============================
+           SIDEBAR
+        ============================== */
+
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(180deg, #0f172a, #172554);
+            color: white;
+            padding: 25px 18px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 100;
+        }
+
+
+        .logo {
+            padding: 5px 12px 35px;
+        }
+
+        .logo h1 {
+            font-size: 27px;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: #60a5fa;
+        }
+
+        .logo p {
+            color: #94a3b8;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+
+        /* ==============================
+           NAVIGATION
+        ============================== */
+
+        .nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: #cbd5e1;
+            padding: 13px 15px;
+            border-radius: 10px;
+
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            font-size: 15px;
+
+            transition: 0.25s;
+        }
+
+        .nav a:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            transform: translateX(3px);
+        }
+
+        .nav a.active {
+            background: #2563eb;
+            color: white;
+            box-shadow: 0 7px 18px rgba(37, 99, 235, 0.3);
+        }
+
+        .nav-icon {
+            width: 22px;
+            text-align: center;
+            font-size: 17px;
+        }
+
+
+        /* ==============================
+           SIDEBAR BOTTOM
+        ============================== */
+
+        .sidebar-bottom {
+            margin-top: auto;
+        }
+
+        .user-mini {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding: 18px 10px;
+            margin-bottom: 10px;
+        }
+
+        .user-mini strong {
+            display: block;
+            color: white;
+            font-size: 14px;
+        }
+
+        .user-mini small {
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .logout-btn {
+            width: 100%;
+            border: none;
+            background: #ef4444;
+            color: white;
+            padding: 12px;
+            border-radius: 9px;
+
+            cursor: pointer;
+
+            font-size: 14px;
+            font-weight: 600;
+
+            transition: 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+
+
+        /* ==============================
+           MAIN
+        ============================== */
+
+        .main {
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            padding: 35px 45px;
+        }
+
+
+        /* ==============================
+           HEADER
+        ============================== */
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 28px;
+        }
+
+        .page-title h2 {
+            font-size: 30px;
+            margin-bottom: 7px;
+        }
+
+        .page-title p {
+            color: #64748b;
+            font-size: 15px;
+        }
+
+
+        /* ==============================
+           PROFILE
+        ============================== */
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            background: white;
+
+            padding: 8px 15px 8px 8px;
+
+            border-radius: 40px;
+
+            box-shadow:
+                0 4px 15px rgba(15, 23, 42, 0.07);
+        }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+
+            border-radius: 50%;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #60a5fa
+                );
+
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .profile-info strong {
+            display: block;
+            font-size: 13px;
+        }
+
+        .profile-info small {
+            color: #64748b;
+            font-size: 11px;
+        }
+
+
+        /* ==============================
+           FORM CARD
+        ============================== */
+
+        .form-card {
+            background: white;
+
+            border-radius: 18px;
+
+            padding: 32px;
+
+            max-width: 1050px;
+
+            box-shadow:
+                0 6px 25px rgba(15, 23, 42, 0.06);
+
+            border: 1px solid #eef2f7;
+        }
+
+
+        .form-intro {
+            margin-bottom: 28px;
+        }
+
+        .form-intro h3 {
+            font-size: 20px;
+            margin-bottom: 6px;
+        }
+
+        .form-intro p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+
+        /* ==============================
+           FORM GRID
+        ============================== */
+
+        .form-grid {
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 22px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .full {
+            grid-column: 1 / -1;
+        }
+
+
+        label {
+            font-size: 14px;
+
+            font-weight: 600;
+
+            color: #334155;
+
+            margin-bottom: 8px;
+        }
+
+        .required {
+            color: #ef4444;
+        }
+
+
+        input,
+        select,
+        textarea {
+
+            width: 100%;
+
+            border: 1px solid #d5dde8;
+
+            border-radius: 10px;
+
+            padding: 13px 14px;
+
+            font-size: 14px;
+
+            color: #172033;
+
+            background: #ffffff;
+
+            outline: none;
+
+            transition: 0.2s;
+        }
+
+
+        input::placeholder,
+        textarea::placeholder {
+            color: #94a3b8;
+        }
+
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+
+            border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(37, 99, 235, 0.10);
+        }
+
+
+        select {
+            cursor: pointer;
+        }
+
+
+        textarea {
+            min-height: 150px;
+
+            resize: vertical;
+        }
+
+
+        /* ==============================
+           DESCRIPTION COUNTER
+        ============================== */
+
+        .textarea-footer {
+            display: flex;
+            justify-content: space-between;
+
+            margin-top: 6px;
+        }
+
+        .hint {
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .counter {
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+
+        /* ==============================
+           INFO BOX
+        ============================== */
+
+        .info-box {
+
+            grid-column: 1 / -1;
+
+            background: #eff6ff;
+
+            border: 1px solid #dbeafe;
+
+            border-radius: 11px;
+
+            padding: 14px 16px;
+
+            display: flex;
+
+            gap: 12px;
+
+            align-items: flex-start;
+        }
+
+        .info-icon {
+            font-size: 18px;
+        }
+
+        .info-box strong {
+            display: block;
+
+            color: #1e40af;
+
+            font-size: 13px;
+
+            margin-bottom: 3px;
+        }
+
+        .info-box p {
+            color: #475569;
+
+            font-size: 12px;
+
+            line-height: 1.5;
+        }
+
+
+        /* ==============================
+           BUTTONS
+        ============================== */
+
+        .form-actions {
+
+            display: flex;
+
+            justify-content: flex-end;
+
+            gap: 12px;
+
+            margin-top: 28px;
+
+            padding-top: 22px;
+
+            border-top: 1px solid #eef2f7;
+        }
+
+
+        .cancel-btn,
+        .submit-btn {
+
+            padding: 13px 22px;
+
+            border-radius: 9px;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+
+        .cancel-btn {
+
+            background: white;
+
+            border: 1px solid #d5dde8;
+
+            color: #475569;
+
+        }
+
+        .cancel-btn:hover {
+
+            border-color: #94a3b8;
+
+            background: #f8fafc;
+
+        }
+
+
+        .submit-btn {
+
+            background: #2563eb;
+
+            color: white;
+
+            border: none;
+
+            min-width: 160px;
+
+        }
+
+        .submit-btn:hover {
+
+            background: #1d4ed8;
+
+            transform: translateY(-1px);
+
+            box-shadow:
+                0 7px 15px
+                rgba(37, 99, 235, 0.2);
+
+        }
+
+        .submit-btn:disabled {
+
+            background: #94a3b8;
+
+            cursor: not-allowed;
+
+            transform: none;
+
+            box-shadow: none;
+
+        }
+
+
+        /* ==============================
+           MESSAGE
+        ============================== */
+
+        .message {
+
+            display: none;
+
+            margin-top: 20px;
+
+            padding: 14px 16px;
+
+            border-radius: 10px;
+
+            font-size: 14px;
+
+            line-height: 1.5;
+        }
+
+
+        .message.success {
+
+            display: block;
+
+            background: #dcfce7;
+
+            color: #166534;
+
+            border: 1px solid #bbf7d0;
+        }
+
+
+        .message.error {
+
+            display: block;
+
+            background: #fee2e2;
+
+            color: #b91c1c;
+
+            border: 1px solid #fecaca;
+        }
+
+
+        /* ==============================
+           MOBILE
+        ============================== */
+
+        @media (max-width: 850px) {
+
+            .sidebar {
+                width: 210px;
+            }
+
+            .main {
+                margin-left: 210px;
+
+                width:
+                    calc(100% - 210px);
+
+                padding: 25px;
+            }
+
+            .profile {
+                display: none;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full {
+                grid-column: auto;
+            }
+
+            .info-box {
+                grid-column: auto;
+            }
+        }
+
+
+        @media (max-width: 600px) {
+
+            .dashboard {
+                display: block;
+            }
+
+            .sidebar {
+                position: relative;
+
+                width: 100%;
+
+                height: auto;
+            }
+
+            .main {
+                margin-left: 0;
+
+                width: 100%;
+
+                padding: 20px;
+            }
+
+            .nav {
+                flex-direction: row;
+
+                overflow-x: auto;
+            }
+
+            .nav a {
+                white-space: nowrap;
+            }
+
+            .page-header {
+                display: block;
+            }
+
+            .form-card {
+                padding: 22px;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .cancel-btn,
+            .submit-btn {
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="dashboard">
+
+
+    <!-- ==========================================
+         SIDEBAR
+    =========================================== -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <h1>
+                Campus<span>Care</span>
+            </h1>
+
+            <p>
+                Student Portal
+            </p>
+
+        </div>
+
+
+        <nav class="nav">
+
+            <a href="student-dashboard.html">
+
+                <span class="nav-icon">
+                    ⌂
+                </span>
+
+                Dashboard
+
+            </a>
+
+
+            <a
+                href="complaint-form.html"
+                class="active"
+            >
+
+                <span class="nav-icon">
+                    ＋
+                </span>
+
+                Report Issue
+
+            </a>
+
+
+            <a href="track-complaint.html">
+
+                <span class="nav-icon">
+                    ◉
+                </span>
+
+                Track Complaints
+
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <div class="user-mini">
+
+                <strong id="sidebarName">
+                    Student
+                </strong>
+
+                <small id="sidebarEmail">
+                    student@email.com
+                </small>
+
+            </div>
+
+
+            <button
+                class="logout-btn"
+                onclick="logout()"
+            >
+                Logout
+            </button>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- ==========================================
+         MAIN CONTENT
+    =========================================== -->
+
+    <main class="main">
+
+
+        <!-- HEADER -->
+
+        <div class="page-header">
+
+            <div class="page-title">
+
+                <h2>
+                    Report a Maintenance Issue
+                </h2>
+
+                <p>
+                    Submit a complaint and our campus team will review it.
+                </p>
+
+            </div>
+
+
+            <div class="profile">
+
+                <div
+                    class="avatar"
+                    id="avatar"
+                >
+                    S
+                </div>
+
+
+                <div class="profile-info">
+
+                    <strong id="profileName">
+                        Student
+                    </strong>
+
+                    <small>
+                        Student Account
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ==========================================
+             FORM
+        =========================================== -->
+
+        <section class="form-card">
+
+
+            <div class="form-intro">
+
+                <h3>
+                    Complaint Details
+                </h3>
+
+                <p>
+                    Please provide accurate information so the issue can be resolved quickly.
+                </p>
+
+            </div>
+
+
+            <form id="complaintForm">
+
+
+                <div class="form-grid">
+
+
+                    <!-- TITLE -->
+
+                    <div class="form-group full">
+
+                        <label for="title">
+
+                            Issue Title
+                            <span class="required">*</span>
+
+                        </label>
+
+                        <input
+                            type="text"
+                            id="title"
+                            placeholder="Example: Water leakage in Room 204"
+                            required
+                        >
+
+                    </div>
+
+
+
+                    <!-- CATEGORY -->
+
+                    <div class="form-group">
+
+                        <label for="category">
+
+                            Category
+                            <span class="required">*</span>
+
+                        </label>
+
+                        <select
+                            id="category"
+                            required
+                        >
+
+                            <option value="">
+                                Select category
+                            </option>
+
+                            <option value="Electrical">
+                                Electrical
+                            </option>
+
+                            <option value="Plumbing">
+                                Plumbing
+                            </option>
+
+                            <option value="Cleaning">
+                                Cleaning
+                            </option>
+
+                            <option value="Infrastructure">
+                                Infrastructure
+                            </option>
+
+                            <option value="Internet">
+                                Internet / Wi-Fi
+                            </option>
+
+                            <option value="Furniture">
+                                Furniture
+                            </option>
+
+                            <option value="Other">
+                                Other
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- PRIORITY -->
+
+                    <div class="form-group">
+
+                        <label for="priority">
+
+                            Priority
+                            <span class="required">*</span>
+
+                        </label>
+
+                        <select
+                            id="priority"
+                            required
+                        >
+
+                            <option value="">
+                                Select priority
+                            </option>
+
+                            <option value="Low">
+                                Low
+                            </option>
+
+                            <option value="Medium">
+                                Medium
+                            </option>
+
+                            <option value="High">
+                                High
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- LOCATION -->
+
+                    <div class="form-group full">
+
+                        <label for="location">
+
+                            Location
+                            <span class="required">*</span>
+
+                        </label>
+
+                        <input
+                            type="text"
+                            id="location"
+                            placeholder="Example: Block B, Room 204"
+                            required
+                        >
+
+                    </div>
+
+
+
+                    <!-- DESCRIPTION -->
+
+                    <div class="form-group full">
+
+                        <label for="description">
+
+                            Description
+                            <span class="required">*</span>
+
+                        </label>
+
+                        <textarea
+                            id="description"
+                            maxlength="500"
+                            placeholder="Describe the problem clearly..."
+                            required
+                        ></textarea>
+
+
+                        <div class="textarea-footer">
+
+                            <span class="hint">
+                                Include useful details about the issue.
+                            </span>
+
+                            <span
+                                class="counter"
+                                id="counter"
+                            >
+                                0 / 500
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- INFORMATION -->
+
+                    <div class="info-box">
+
+                        <div class="info-icon">
+                            💡
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                What happens after you submit?
+                            </strong>
+
+                            <p>
+                                Your complaint will be recorded in CampusCare
+                                and assigned the status <b>Pending</b>.
+                                You can track its progress from the
+                                Track Complaints section.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- MESSAGE -->
+
+                <div
+                    id="message"
+                    class="message"
+                ></div>
+
+
+
+                <!-- ACTIONS -->
+
+                <div class="form-actions">
+
+                    <button
+                        type="button"
+                        class="cancel-btn"
+                        onclick="goDashboard()"
+                    >
+                        Cancel
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="submit-btn"
+                        id="submitButton"
+                    >
+                        Submit Complaint
+                    </button>
+
+                </div>
+
+
+            </form>
+
+        </section>
+
+
+    </main>
+
+</div>
+
+
+
+<script>
+
+    // =====================================================
+    // API
+    // =====================================================
+
+    const API_BASE = window.CAMPUSCARE_API_BASE_URL;
+
+
+    // =====================================================
+    // CHECK LOGIN
+    // =====================================================
+
+    const token =
+        localStorage.getItem("access_token");
+
+    const userString =
+        localStorage.getItem("user");
+
+
+    if (!token || !userString) {
+
+        window.location.href =
+            "login.html";
+
+    }
+
+
+    let user;
+
+
+    try {
+
+        user =
+            JSON.parse(userString);
+
+    }
+
+    catch (error) {
+
+        localStorage.clear();
+
+        window.location.href =
+            "login.html";
+
+    }
+
+
+
+    // =====================================================
+    // DISPLAY USER
+    // =====================================================
+
+    if (user) {
+
+        document.getElementById(
+            "sidebarName"
+        ).textContent =
+            user.name;
+
+
+        document.getElementById(
+            "sidebarEmail"
+        ).textContent =
+            user.email;
+
+
+        document.getElementById(
+            "profileName"
+        ).textContent =
+            user.name;
+
+
+        document.getElementById(
+            "avatar"
+        ).textContent =
+            user.name
+                .charAt(0)
+                .toUpperCase();
+
+    }
+
+
+
+    // =====================================================
+    // DESCRIPTION COUNTER
+    // =====================================================
+
+    const description =
+        document.getElementById(
+            "description"
+        );
+
+    const counter =
+        document.getElementById(
+            "counter"
+        );
+
+
+    description.addEventListener(
+        "input",
+        function() {
+
+            counter.textContent =
+                `${description.value.length} / 500`;
+
+        }
+    );
+
+
+
+    // =====================================================
+    // SUBMIT COMPLAINT
+    // =====================================================
+
+    document
+        .getElementById("complaintForm")
+        .addEventListener(
+            "submit",
+            async function(event) {
+
+                event.preventDefault();
+
+
+                const message =
+                    document.getElementById(
+                        "message"
+                    );
+
+
+                const submitButton =
+                    document.getElementById(
+                        "submitButton"
+                    );
+
+
+                message.className =
+                    "message";
+
+                message.textContent =
+                    "";
+
+
+                // -----------------------------------------
+                // GET FORM VALUES
+                // -----------------------------------------
+
+                const title =
+                    document
+                        .getElementById("title")
+                        .value
+                        .trim();
+
+
+                const category =
+                    document
+                        .getElementById("category")
+                        .value;
+
+
+                const priority =
+                    document
+                        .getElementById("priority")
+                        .value;
+
+
+                const location =
+                    document
+                        .getElementById("location")
+                        .value
+                        .trim();
+
+
+                const descriptionValue =
+                    document
+                        .getElementById("description")
+                        .value
+                        .trim();
+
+
+
+                // -----------------------------------------
+                // DISABLE BUTTON
+                // -----------------------------------------
+
+                submitButton.disabled =
+                    true;
+
+                submitButton.textContent =
+                    "Submitting...";
+
+
+
+                try {
+
+                    // -------------------------------------
+                    // SEND TO FASTAPI
+                    // -------------------------------------
+
+                    const response =
+                        await fetch(
+                            `${API_BASE}/api/complaints`,
+                            {
+
+                                method: "POST",
+
+                                headers: {
+
+                                    "Content-Type":
+                                        "application/json",
+
+                                    "Authorization":
+                                        `Bearer ${token}`
+
+                                },
+
+                                body:
+                                    JSON.stringify({
+
+                                        student_name:
+                                            user.name,
+
+                                        email:
+                                            user.email,
+
+                                        title:
+                                            title,
+
+                                        category:
+                                            category,
+
+                                        location:
+                                            location,
+
+                                        description:
+                                            descriptionValue,
+
+                                        priority:
+                                            priority
+
+                                    })
+
+                            }
+                        );
+
+
+
+                    const data =
+                        await response.json();
+
+
+
+                    // -------------------------------------
+                    // ERROR
+                    // -------------------------------------
+
+                    if (!response.ok) {
+
+                        if (
+                            response.status === 401
+                        ) {
+
+                            localStorage.clear();
+
+                            window.location.href =
+                                "login.html";
+
+                            return;
+
+                        }
+
+
+                        throw new Error(
+                            data.detail ||
+                            "Unable to submit complaint."
+                        );
+
+                    }
+
+
+
+                    // -------------------------------------
+                    // SUCCESS
+                    // -------------------------------------
+
+                    message.className =
+                        "message success";
+
+
+                    message.innerHTML =
+
+                        `✓ Complaint submitted successfully! 
+                         Your Complaint ID is 
+                         <strong>#${data.complaint_id}</strong>.
+                         <br>
+                         Status: <strong>${data.status}</strong>`;
+
+
+
+                    // -------------------------------------
+                    // RESET FORM
+                    // -------------------------------------
+
+                    document
+                        .getElementById(
+                            "complaintForm"
+                        )
+                        .reset();
+
+
+                    counter.textContent =
+                        "0 / 500";
+
+
+
+                    // -------------------------------------
+                    // GO TO DASHBOARD AFTER SUCCESS
+                    // -------------------------------------
+
+                    setTimeout(
+                        function() {
+
+                            window.location.href =
+                                "student-dashboard.html";
+
+                        },
+                        2000
+                    );
+
+
+                }
+
+                catch (error) {
+
+                    console.error(
+                        "Complaint submission error:",
+                        error
+                    );
+
+
+                    message.className =
+                        "message error";
+
+
+                    message.textContent =
+                        error.message ||
+                        "Unable to connect to CampusCare server.";
+
+                }
+
+
+                finally {
+
+                    submitButton.disabled =
+                        false;
+
+                    submitButton.textContent =
+                        "Submit Complaint";
+
+                }
+
+            }
+        );
+
+
+
+    // =====================================================
+    // DASHBOARD
+    // =====================================================
+
+    function goDashboard() {
+
+        window.location.href =
+            "student-dashboard.html";
+
+    }
+
+
+
+    // =====================================================
+    // LOGOUT
+    // =====================================================
+
+    function logout() {
+
+        localStorage.removeItem(
+            "access_token"
+        );
+
+        localStorage.removeItem(
+            "user"
+        );
+
+        window.location.href =
+            "login.html";
+
+    }
+
+</script>
+
+
+</body>
+</html>

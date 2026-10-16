@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="js/config.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CampusCare | Login</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #eef4ff, #f8fbff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-container {
+            width: 400px;
+            background: white;
+            padding: 40px;
+            border-radius: 18px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #2563eb;
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .logo p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #334155;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px 15px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 9px;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        button:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .message {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            display: none;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .error {
+            display: block;
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .success {
+            display: block;
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 22px;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .register-link a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        .back-home {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .back-home a {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .back-home a:hover {
+            color: #2563eb;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <div class="logo">
+            <h1>CampusCare</h1>
+            <p>Campus Complaint Management System</p>
+        </div>
+
+        <form id="loginForm">
+
+            <div class="form-group">
+                <label for="email">Email</label>
+
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Enter your email"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Enter your password"
+                    required
+                >
+            </div>
+
+            <button type="submit" id="loginButton">
+                Login
+            </button>
+
+            <div id="message" class="message"></div>
+
+        </form>
+
+        <div class="register-link">
+            Don't have an account?
+            <a href="register.html">Register here</a>
+        </div>
+
+        <div class="back-home">
+            <a href="index.html">← Back to Home</a>
+        </div>
+
+    </div>
+
+
+    <script>
+
+        // =====================================================
+        // CAMPUSCARE API
+        // =====================================================
+
+        const API_BASE = window.CAMPUSCARE_API_BASE_URL;
+
+
+        // =====================================================
+        // LOGIN FORM
+        // =====================================================
+
+        document
+            .getElementById("loginForm")
+            .addEventListener("submit", async function(event) {
+
+                event.preventDefault();
+
+                const email =
+                    document.getElementById("email").value.trim();
+
+                const password =
+                    document.getElementById("password").value;
+
+                const message =
+                    document.getElementById("message");
+
+                const loginButton =
+                    document.getElementById("loginButton");
+
+
+                // Clear previous message
+                message.className = "message";
+                message.textContent = "";
+
+
+                // Disable button
+                loginButton.disabled = true;
+                loginButton.textContent = "Logging in...";
+
+
+                try {
+
+                    // =================================================
+                    // SEND LOGIN REQUEST TO FASTAPI
+                    // =================================================
+
+                    const response = await fetch(
+                        `${API_BASE}/api/auth/login`,
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+
+                            body: JSON.stringify({
+                                email: email,
+                                password: password
+                            })
+                        }
+                    );
+
+
+                    const data = await response.json();
+
+
+                    // =================================================
+                    // LOGIN FAILED
+                    // =================================================
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            data.detail || "Invalid email or password"
+                        );
+                    }
+
+
+                    // =================================================
+                    // SAVE JWT TOKEN
+                    // =================================================
+
+                    localStorage.setItem(
+                        "access_token",
+                        data.access_token
+                    );
+
+
+                    // =================================================
+                    // SAVE USER INFORMATION
+                    // =================================================
+
+                    localStorage.setItem(
+                        "user",
+                        JSON.stringify(data.user)
+                    );
+
+
+                    // =================================================
+                    // SUCCESS MESSAGE
+                    // =================================================
+
+                    message.className = "message success";
+
+                    message.textContent =
+                        `Login successful! Welcome ${data.user.name}`;
+
+
+                    // =================================================
+                    // ROLE BASED REDIRECTION
+                    // =================================================
+
+                    setTimeout(function() {
+
+                        if (["student", "faculty"].includes(data.user.role)) {
+
+                            window.location.href =
+                                "student-dashboard.html";
+
+                        }
+                        else if (data.user.role === "staff") {
+
+                            window.location.href =
+                                "staff-dashboard.html";
+
+                        }
+                        else if (data.user.role === "admin") {
+
+                            window.location.href =
+                                "admin-dashboard.html";
+
+                        }
+                        else {
+
+                            throw new Error(
+                                "Unknown user role"
+                            );
+                        }
+
+                    }, 700);
+
+
+                }
+                catch (error) {
+
+                    console.error("Login Error:", error);
+
+                    message.className = "message error";
+
+                    message.textContent =
+                        error.message ||
+                        "Unable to connect to CampusCare server.";
+
+                }
+                finally {
+
+                    loginButton.disabled = false;
+
+                    loginButton.textContent = "Login";
+
+                }
+
+            });
+
+    </script>
+
+</body>
+</html>

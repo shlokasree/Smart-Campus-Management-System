@@ -1,0 +1,46 @@
+services:
+  - type: web
+    name: campuscare-api
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --app-dir backend --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: POSTGRES_HOST
+        sync: false
+      - key: POSTGRES_PORT
+        value: "5432"
+      - key: POSTGRES_DB
+        value: campus_db
+      - key: POSTGRES_USER
+        sync: false
+      - key: POSTGRES_PASSWORD
+        sync: false
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: CORS_ORIGINS
+        value: https://campuscare-frontend.onrender.com
+
+  - type: web
+    name: campuscare-analytics
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --chdir analytics_service app:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: POSTGRES_HOST
+        sync: false
+      - key: POSTGRES_PORT
+        value: "5432"
+      - key: POSTGRES_DB
+        value: campus_db
+      - key: POSTGRES_USER
+        sync: false
+      - key: POSTGRES_PASSWORD
+        sync: false
+      - key: CORS_ORIGINS
+        value: https://campuscare-frontend.onrender.com
+
+  - type: web
+    name: campuscare-frontend
+    runtime: static
+    staticPublishPath: frontend

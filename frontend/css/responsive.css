@@ -1,0 +1,11 @@
+/* CampusCare responsive support */
+/* Main responsive styles are included in style.css */
+
+@media (max-width: 800px) {
+
+    html,
+    body {
+        overflow-x: hidden;
+    }
+
+}
